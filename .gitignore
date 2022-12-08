@@ -1,0 +1,18 @@
+### Eclipse specific
+bin/
+.settings/
+#.project
+#.classpath
+
+### Dependencies
+inc/
+
+### Java
+*.class
+*.jar
+*.zip
+
+### Crash Logs / Application Data
+hs_err_pid*
+replay_pid*
+data/
