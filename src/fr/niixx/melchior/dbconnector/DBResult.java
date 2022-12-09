@@ -5,8 +5,9 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
-public class DBResult {
+public class DBResult implements Iterable<HashMap<String, Object>> {
 	private ArrayList<HashMap<String, Object>> content = new ArrayList<>();
 	private ArrayList<String> columns = new ArrayList<>();
 	
@@ -47,6 +48,10 @@ public class DBResult {
 		
 	}
 	
+	public Iterator<HashMap<String, Object>> iterator() {
+		return content.iterator();
+	}
+	
 	public String print() {
 		// Fetch Longest String length by column
 		ArrayList<Integer> columnLengths = new ArrayList<>();
@@ -56,7 +61,8 @@ public class DBResult {
 			strings.add(column);
 			
 			for(HashMap<String, Object> line : content)
-				strings.add(line.get(column).toString());
+				if(line.get(column) == null) strings.add("");
+				else strings.add(line.get(column).toString());
 			
 			int maxStringLength = 0;
 			for(int active_column = 0; active_column < strings.size(); active_column++)
@@ -104,7 +110,8 @@ public class DBResult {
 		for(HashMap<String, Object> line : content) {
 			out += "|";
 			for(int active_column = 0; active_column < columns.size(); active_column++) {
-				String content = (String)line.get(columns.get(active_column).toString());
+				String content = "";
+				if(line.get(columns.get(active_column)) != null) content = line.get(columns.get(active_column)).toString();
 				int spaceNeeded = columnLengths.get(active_column) - content.length();
 
 				for(int i = 0; i < spaceNeeded; i++) content += " ";

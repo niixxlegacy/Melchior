@@ -14,8 +14,9 @@ public class CasparCommands implements Registry {
 		return "STOP " + config.get("casparcg.media.defaultChannel") + "-" + String.valueOf(Layer);
 	}
 	
-	public static String clear() {
-		return "CLEAR " + config.get("casparcg.media.defaultChannel");
+	public static String clear(int Layer) {
+		if(Layer <= 0) return "CLEAR " + config.get("casparcg.media.defaultChannel");
+		else return "CLEAR " + config.get("casparcg.media.defaultChannel") + "-" + Layer;
 	}
 	
 	public static String playWeb(String filename, int Layer) {
