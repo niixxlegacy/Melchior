@@ -1,12 +1,23 @@
 package fr.niixx.melchior;
 
-import fr.niixx.melchior.casparsocket.CasparCommands;
-import fr.niixx.melchior.casparsocket.CasparSocket;
-import fr.niixx.melchior.playlist.Playlist;
-import fr.niixx.melchior.playlist.PlaylistItem;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import fr.niixx.melchior.cli.Cli;
 
 public class Main implements Registry {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, InterruptedException {
+		String str = "config set casparcg.server.address echo.niixx.net\nconfig set casparcg.server.port 5250\nconfig set casparcg.media.defaultChannel 1\nexit";
+	    ByteArrayInputStream stream = new ByteArrayInputStream(str.getBytes("UTF-8"));
+		
+		Cli autostart = new Cli(System.out, stream);
+		Cli cli = new Cli(System.out, System.in);
+	}
+	
+	
+}
+
+/*
 		config.put("casparcg.server.address", "echo.niixx.net");
 		config.put("casparcg.server.port", "5250");
 		config.put("casparcg.media.defaultChannel", "1");
@@ -33,8 +44,7 @@ public class Main implements Registry {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-}
+*/
 
 /*
 	config.put("database.server.address", "echo.niixx.net");

@@ -20,14 +20,16 @@ public class CasparSocket implements Registry {
 	private int serverPort = -1;
 	private boolean connected = false;
 	
-	public CasparSocket() throws IOException {
-		this.serverAddress = config.get("casparcg.server.address");
-		this.serverPort = Integer.parseInt(config.get("casparcg.server.port"));
-		open();
+	public CasparSocket() {
+
 	}
 	
-	private synchronized void open() throws UnknownHostException, IOException {
+	public synchronized void open() throws UnknownHostException, IOException {
 		if (connected) return;
+		
+		serverAddress = config.get("casparcg.server.address");
+		serverPort = Integer.parseInt(config.get("casparcg.server.port"));
+		
 		socket = new Socket(InetAddress.getByName(serverAddress), serverPort);
 		tx = new PrintWriter(socket.getOutputStream(), true);
 		rx = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
@@ -42,11 +44,13 @@ public class CasparSocket implements Registry {
 		socket = null;
 		rx = null;
 		tx = null;
+		serverAddress = null;
+		serverPort = -1;
 		connected = false;
 	}
 		
 	public synchronized String send(String cmd) throws IOException {
-		if (!connected) open();
+		if (!connected) return "000 Socket not opened";
 		
 		tx.println(cmd);
 		
