@@ -10,6 +10,8 @@ import java.io.OutputStreamWriter;
 
 import fr.niixx.melchior.cli.commands.CasparCG;
 import fr.niixx.melchior.cli.commands.Config;
+import fr.niixx.melchior.cli.commands.Player;
+import fr.niixx.melchior.cli.errors.CommandArgumentsException;
 import fr.niixx.melchior.cli.errors.UnknownCommandException;
 
 public class Cli {
@@ -17,6 +19,9 @@ public class Cli {
 	private BufferedWriter tx;
 	private BufferedReader rx;
 	public String[] currentCommand = {""};
+	
+	private Boolean promptText = true;
+	private Boolean headlessMode = false;
 
 	public Cli(OutputStream btx, InputStream brx) throws IOException, InterruptedException {	
 		initBasicIO(btx, brx);
@@ -30,8 +35,10 @@ public class Cli {
 			
 			try {
 				switch(currentCommand[0]) {
+					case "set": cmd_set(); break;
 					case "config": new Config(this); break;
 					case "casparcg": new CasparCG(this); break; 
+					case "player": new Player(this); break;
 					default: throw new UnknownCommandException();
 				}
 			} catch(Exception e) {
@@ -43,9 +50,32 @@ public class Cli {
 						
 	}
 	
+	private void cmd_set() throws Exception {
+		switch(currentCommand[1]) {
+			case "prompt":
+				switch(currentCommand[2]) {
+					case "on": promptText = true; print("Prompt Text Enabled"); break;
+					case "off": promptText = false; print("Prompt Text Disabled"); break;
+				}
+				break;
+				
+			case "headless":
+				switch(currentCommand[2]) {
+					case "on": if(tx == null) break; headlessMode = true; print("Headless Mode Enabled"); break;
+					case "off": if(tx == null) break; headlessMode = false; print("Headless Mode Disabled"); break;
+				}
+				break;
+				
+			default: throw new CommandArgumentsException();
+		}
+	}
+	
 	public String[] prompt() throws IOException {
-		tx.write(currentCommand[0] + "> ");
-		tx.flush();
+		if(promptText && !headlessMode) {
+			tx.write(currentCommand[0] + "> ");
+			tx.flush();
+		}
+		
 		String line = null;
 		
 		while ((line = rx.readLine()) != null) {
@@ -69,30 +99,29 @@ public class Cli {
 	}
 	
 	public void print(String line) throws IOException {
+		if(headlessMode) return;
 		tx.write(line);
 		tx.newLine();
 		tx.flush();
 	}
 	
 	private void initBasicIO(OutputStream tx, InputStream rx) throws IOException, InterruptedException {
-		if(tx == null || rx == null) throw new IOException("Input or output stream is null or undefined.");
+		if(rx == null) throw new IOException("Input stream is null or undefined.");
 		
 		InputStreamReader rx_reader = new InputStreamReader(rx, "UTF-8");
-		
-		// Waiting for the reader to be ready (optional but should really be here)
-		//for(int i = 0; i < 50; i++) {
-		//	if(rx_reader.ready()) break;
-		//	Thread.sleep(100);
-		//	if(i == 50) throw new IOException("Timeout when trying to initialize the input stream reader");
-		//}
-		
-		OutputStreamWriter tx_writer = new OutputStreamWriter(tx, "UTF-8");
-			
-		this.tx = new BufferedWriter(tx_writer);
 		this.rx = new BufferedReader(rx_reader);
 		
-		this.tx.write("\u001B[0m");
-		this.tx.flush();
+		OutputStreamWriter tx_writer;
+		if(tx != null) {
+			tx_writer = new OutputStreamWriter(tx, "UTF-8");
+			this.tx = new BufferedWriter(tx_writer);
+			
+			this.tx.write("\u001B[0m");
+			this.tx.flush();
+		} else {
+			this.tx = null;
+			this.headlessMode = true;
+		}
 	}
 
 }

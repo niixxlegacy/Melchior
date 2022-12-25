@@ -1,6 +1,7 @@
 package fr.niixx.melchior.cli.commands;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import fr.niixx.melchior.Registry;
 import fr.niixx.melchior.casparsocket.CasparCommands;
@@ -44,10 +45,10 @@ public class CasparCG extends DefaultCommand implements Registry {
 				cmd_ping();
 				break;
 				
-			//case "exec":
-			//	checkArgs(3, false);
-			//	cmd_exec();
-			//	break;
+			case "exec":
+				checkArgs(3, false);
+				cmd_exec(activeCommand);
+				break;
 								
 			default: throw new CommandArgumentsException();
 		}
@@ -83,10 +84,13 @@ public class CasparCG extends DefaultCommand implements Registry {
 		cli.print(casparsocket.send(CasparCommands.ping()));
 	}
 	
-	//private void cmd_exec() throws IOException {
-	//	String cmd = "";
-	//	for(int i = 2; i < activeCommand.length - 1; i++) cmd += activeCommand[i] + " ";
-	//	cli.print(casparsocket.send(cmd.substring(0, cmd.length() - 2)));
-	//}
+	private void cmd_exec(String[] command) throws IOException {
+		String[] cArray = Arrays.copyOfRange(command, checkInt(2), command.length);
+		StringBuilder cBuilder = new StringBuilder();
+		for(String cmd : cArray) cBuilder.append(cmd + " ");
+		String cString = cBuilder.substring(0, cBuilder.length() - 1);
+		
+		cli.print(casparsocket.send(cString));
+	}
 	
 }

@@ -1,5 +1,6 @@
 package fr.niixx.melchior.playlist;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,38 +14,47 @@ public class Playlist implements Registry, Iterable<PlaylistItem> {
 	private ArrayList<PlaylistItem> list = new ArrayList<>();
 	private String playlistName;
 	private int currentIndex = -1;
-	private int lastIndex;
+	private int lastIndex = -1;
 	private PlaylistItem currentItem = null;
+	private String dbprint;
 
-	public Playlist(String playlistName) throws Exception {
-		this.playlistName = playlistName;
-		if(!update()) throw new Exception("Unable to update playlist");
+	public Playlist(String playlistName) throws ClassNotFoundException, SQLException {
+		reset(playlistName);
 	}
 	
-	public boolean update() {
-		try {
-			DBConnector db = new DBConnector();
-			DBResult res = db.queryRead("SELECT * FROM pl_" + this.playlistName);
-			for(HashMap<String, Object> item : res)
-				list.add(new PlaylistItem((int)item.get("type"), (String)item.get("label"), (String)item.get("content"), (int)item.get("duration"), (int)item.get("layer")));
-			db.close();
-			
-			this.lastIndex = list.size() - 1;
-			return true;
-		} catch(Exception e) {
-			return false;
-		}
+	public void reset(String playlistName) throws ClassNotFoundException, SQLException {
+		this.list = new ArrayList<>();
+		this.playlistName = playlistName;
+		this.currentIndex = -1;
+		this.lastIndex = -1;
+		this.currentItem = null;
+		
+		DBConnector db = new DBConnector();
+		DBResult res = db.queryRead("SELECT * FROM pl_" + this.playlistName);
+		for(HashMap<String, Object> item : res)
+			list.add(new PlaylistItem((int)item.get("type"), (String)item.get("label"), (String)item.get("content"), (int)item.get("duration"), (int)item.get("layer")));
+		db.close();
+		
+		dbprint = res.print();
+		lastIndex = list.size() - 1;
+		return;
 	}
 
 	public PlaylistItem advance() {
 		currentIndex++;
-		if(currentIndex > lastIndex) return null;
-		else return jump(currentIndex);
+		return jump(currentIndex);
 	}
 	
 	public PlaylistItem jump(int index) {
-		this.currentItem = this.list.get(index);
-		return list.get(index);
+		if(index > lastIndex) {
+			currentIndex = -1;
+			currentItem = null;
+			return null;
+		}
+		
+		currentIndex = index;
+		currentItem = list.get(index);
+		return currentItem;
 	}
 	
 	public PlaylistItem current() {
@@ -53,6 +63,14 @@ public class Playlist implements Registry, Iterable<PlaylistItem> {
 	
 	public int getLastIndex() {
 		return lastIndex;
+	}
+	
+	public String getlist() {
+		return dbprint;
+	}
+	
+	public int getIndex() {
+		return currentIndex;
 	}
 	
 	public Iterator<PlaylistItem> iterator() {
