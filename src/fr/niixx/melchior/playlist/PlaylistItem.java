@@ -5,7 +5,9 @@ public class PlaylistItem {
 	public static final int Comment = 0;
 	public static final int Media = 1;
 	public static final int Web = 2;
-	public static final int Command = 3;
+	public static final int Insert = 3;
+	public static final int Command = 4;
+	
 
 	public int type;
 	public String label;

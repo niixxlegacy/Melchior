@@ -1,10 +1,14 @@
 config set casparcg.server.address <Adresse_du_serveur_CasparCG>
 config set casparcg.server.port <Port_du_serveur_CasparCG>
+config set casparcg.defaultLayer.media 1
+config set casparcg.defaultLayer.inserts 10
 config set casparcg.media.defaultChannel 1
 config set database.server.address <Adresse_de_la_Base_de_données>
 config set database.server.port <Port_de_la_Base_de_données>
 config set database.server.base <Nom_de_la_Base_de_données>
 config set database.server.user <Utilisateur_de_la_Base_de_données>
 config set database.server.pass <Mot_de_Passe_de_la_Base_de_données>
+config set this.server.address <Adresse_de_ce_serveur>
 casparcg open
+inserts init
 exit

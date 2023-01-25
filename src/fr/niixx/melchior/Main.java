@@ -24,7 +24,7 @@ public class Main implements Registry {
 		
 	    FileInputStream autoexec = new FileInputStream("./autoexec");
 		new Cli(null, autoexec);
-				
+		
 		new Cli(System.out, System.in);
 	}
 	

@@ -64,12 +64,12 @@ public class CasparCG extends DefaultCommand implements Registry {
 		cli.print("OK");
 	}
 	
-	private void cmd_play(String type, String name, String layer) throws IOException {
+	private void cmd_play(String type, String name, String layer) throws IOException, CommandArgumentsException {
 		switch(type) {
 			case "media": cli.print(casparsocket.send(CasparCommands.playMedia(name, Integer.valueOf(layer)))); break;
 			case "web": cli.print(casparsocket.send(CasparCommands.playWeb(name, Integer.valueOf(layer)))); break;
+			default: throw new CommandArgumentsException();
 		}
-		cli.print("OK");
 	}
 	
 	private void cmd_stop(String layer) throws IOException {

@@ -31,8 +31,16 @@ public class Playlist implements Registry, Iterable<PlaylistItem> {
 		
 		DBConnector db = new DBConnector();
 		DBResult res = db.queryRead("SELECT * FROM pl_" + this.playlistName);
-		for(HashMap<String, Object> item : res)
-			list.add(new PlaylistItem((int)item.get("type"), (String)item.get("label"), (String)item.get("content"), (int)item.get("duration"), (int)item.get("layer")));
+		for(HashMap<String, Object> item : res) {
+			int type =			(item.get("type") == null)		? 0 : (int)item.get("type");
+			String label =		(item.get("label") == null)		? "" : (String)item.get("label");
+			String content =	(item.get("content") == null)	? "" : (String)item.get("content");
+			int duration =		(item.get("duration") == null)	? 0 : (int)item.get("duration");
+			int layer =			(item.get("layer") == null)		? 0 : (int)item.get("layer");
+			
+			list.add(new PlaylistItem(type, label, content, duration, layer));
+		}
+			
 		db.close();
 		
 		dbprint = res.print();

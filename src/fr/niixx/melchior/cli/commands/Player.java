@@ -48,13 +48,8 @@ public class Player extends DefaultCommand implements Registry {
 		}
 	}
 
-	private void cmd_init(String name) throws IOException {
-		try {
-			activeplayer.init(name);
-		} catch (ClassNotFoundException | SQLException e) {
-			cli.print(e.getMessage());
-			return;
-		}
+	private void cmd_init(String name) throws IOException, ClassNotFoundException, SQLException {
+		activeplayer.init(name);
 		cli.print("OK");
 		return;
 	}

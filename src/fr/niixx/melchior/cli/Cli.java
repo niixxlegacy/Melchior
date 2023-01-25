@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 
 import fr.niixx.melchior.cli.commands.CasparCG;
 import fr.niixx.melchior.cli.commands.Config;
+import fr.niixx.melchior.cli.commands.Inserts;
 import fr.niixx.melchior.cli.commands.Player;
 import fr.niixx.melchior.cli.errors.CommandArgumentsException;
 import fr.niixx.melchior.cli.errors.UnknownCommandException;
@@ -39,6 +40,7 @@ public class Cli {
 					case "config": new Config(this); break;
 					case "casparcg": new CasparCG(this); break; 
 					case "player": new Player(this); break;
+					case "inserts": new Inserts(this); break;
 					default: throw new UnknownCommandException();
 				}
 			} catch(Exception e) {

@@ -2,6 +2,7 @@ package fr.niixx.melchior.player;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import fr.niixx.melchior.Registry;
 import fr.niixx.melchior.casparsocket.CasparCommands;
@@ -36,12 +37,28 @@ public class Player implements Registry {
 			case PlaylistItem.Comment: break;
 			case PlaylistItem.Media: casparsocket.send(CasparCommands.playMedia(currentlyPlaying.content, currentlyPlaying.layer)); break;
 			case PlaylistItem.Web: casparsocket.send(CasparCommands.playWeb(currentlyPlaying.content, currentlyPlaying.layer)); break;
+			case PlaylistItem.Insert: displayInsert(currentlyPlaying.content, currentlyPlaying.duration, currentlyPlaying.layer); break;
 			case PlaylistItem.Command: casparsocket.send(currentlyPlaying.content); break;
 		}
 		
-		currentThread = new PlayerThread(currentlyPlaying.duration, this);
-		currentThread.start();
+		if(currentlyPlaying.duration > 0 && (currentlyPlaying.type == PlaylistItem.Media || currentlyPlaying.type == PlaylistItem.Web)) {
+			currentThread = new PlayerThread(currentlyPlaying.duration, this);
+			currentThread.start();
+		} else
+			return skip();
+		
 		return out;
+	}
+	
+	private void displayInsert(String input, int duration, int layer) {
+		String[] args = input.split("\\/\\$\\/");
+		
+		String template = args[0];
+		String[] content = Arrays.copyOfRange(args, 0, args.length);
+		
+		try {
+			overlays.request(template, content, duration, layer);
+		} catch (Exception e) { }
 	}
 	
 	private void destroyPlayer() {
