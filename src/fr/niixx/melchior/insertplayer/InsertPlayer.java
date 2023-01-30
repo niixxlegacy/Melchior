@@ -21,7 +21,7 @@ public class InsertPlayer implements Registry {
 		
 	}
 	
-	public void init() throws IOException {
+	public void init() throws Exception {
 		pages = new HashMap<>();
 		activeLayers = new HashMap<>();
 		server = new WebServer();
@@ -41,12 +41,12 @@ public class InsertPlayer implements Registry {
 			(layer == 0) ? Integer.valueOf(config.get("casparcg.defaultLayer.inserts")) : layer)
 		);
 		
-		if(duration == 0) return "OK";
+		//if(duration == 0) return "OK";
 		
-		int count = (activeLayers.containsKey(layer) ? activeLayers.get(layer) : 0) + 1;
-		activeLayers.put(layer, count);
+		//int count = (activeLayers.containsKey(layer) ? activeLayers.get(layer) : 0) + 1;
+		//activeLayers.put(layer, count);
 		
-		new InsertThread(duration + 2000, this, layer).start();
+		//new InsertThread(duration + 2000, this, layer).start();
 		return "OK";
 	}
 		

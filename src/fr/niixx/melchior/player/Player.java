@@ -54,7 +54,7 @@ public class Player implements Registry {
 		String[] args = input.split("\\/\\$\\/");
 		
 		String template = args[0];
-		String[] content = Arrays.copyOfRange(args, 0, args.length);
+		String[] content = Arrays.copyOfRange(args, 1, args.length);
 		
 		try {
 			overlays.request(template, content, duration, layer);

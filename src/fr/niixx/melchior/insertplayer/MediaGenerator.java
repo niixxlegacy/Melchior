@@ -17,9 +17,7 @@ public class MediaGenerator implements Registry {
 		String id = generateId();
 		String data = getTemplate(template);
 				
-		if(args.length >= 2)
-			for(int i = 1; i < args.length; i++)
-				data = data.replaceAll("!%" + i, args[i]);
+		for(int i = 0; i < args.length; i++) data = data.replaceAll("!%" + i, args[i]);
 		
 		data = data.replaceAll("!%duration", String.valueOf(duration));
 		

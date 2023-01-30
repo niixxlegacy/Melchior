@@ -26,6 +26,7 @@ public class Main implements Registry {
 		new Cli(null, autoexec);
 		
 		new Cli(System.out, System.in);
+		System.exit(0);
 	}
 	
 }

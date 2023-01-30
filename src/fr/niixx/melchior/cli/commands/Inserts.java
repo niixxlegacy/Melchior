@@ -1,6 +1,5 @@
 package fr.niixx.melchior.cli.commands;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import fr.niixx.melchior.Registry;
@@ -28,15 +27,15 @@ public class Inserts extends DefaultCommand implements Registry {
 		}
 	}
 	
-	private void cmd_init() throws IOException {
+	private void cmd_init() throws Exception {
 		overlays.init();
 		cli.print("OK");
 	}
 	
 	//inserts create <template> <duration> <layer> <content content content>
 	private void cmd_create(String[] command) throws Exception {
-		String[] args = Arrays.copyOfRange(command, checkInt(4), command.length);
-		cli.print(overlays.request(command[checkInt(2)], args, Integer.valueOf(command[checkInt(3)]), Integer.valueOf(command[checkInt(4)])));
+		String args = Arrays.copyOfRange(command, checkInt(5), command.length).toString();
+		cli.print(overlays.request(command[checkInt(2)], args.split("\\/\\$\\/"), Integer.valueOf(command[checkInt(3)]), Integer.valueOf(command[checkInt(4)])));
 	}
 	
 }
